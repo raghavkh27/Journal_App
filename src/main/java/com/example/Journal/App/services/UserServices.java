@@ -33,4 +33,7 @@ public class UserServices {
     public void updateUserById(ObjectId id, JournalEntity journalEntity){
         journalEntity.setDateTime(journalEntity.getDateTime());
     }
+    public User findByUsername(String username){
+        return userRepo.findByUsername(username);
+    }
 }

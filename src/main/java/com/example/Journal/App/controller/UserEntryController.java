@@ -1,19 +1,13 @@
 package com.example.Journal.App.controller;
 
-import com.example.Journal.App.entity.JournalEntity;
 import com.example.Journal.App.entity.User;
-import com.example.Journal.App.repository.JournalRepo;
-import com.example.Journal.App.repository.UserRepo;
-import com.example.Journal.App.services.JournalServices;
 import com.example.Journal.App.services.UserServices;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -22,8 +16,22 @@ public class UserEntryController {
     private UserServices userServices;
 
     @GetMapping
-    public ResponseEntity<Iterable<User>> getAllUsers() {
-
+    public List<User> getAllUsers() {
+        return userServices.getAllUsers();
+    }
+    @PostMapping
+    public void createUser(@RequestBody User user) {
+        userServices.saveEntry(user);
+    }
+    @PutMapping("/{username}")
+    public ResponseEntity<?> updateUser(@RequestBody User user,  @PathVariable String username) {
+        User userInDb = userServices.findByUsername(username);
+        if(userInDb != null) {
+            userInDb.setUsername(user.getUsername());
+            userInDb.setPassword(user.getPassword());
+            userServices.saveEntry(userInDb);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
