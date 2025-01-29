@@ -5,8 +5,12 @@ import com.example.Journal.App.entity.User;
 import com.example.Journal.App.repository.UserRepo;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +20,15 @@ public class UserServices {
     @Autowired
     private UserRepo userRepo;
 
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    public void saveNewUser ( User user){
+        userRepo.save(user);
+    }
+
     public void saveEntry ( User user){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(List.of("USER"));
         userRepo.save(user);
     }
     public List<User> getAllUsers(){
@@ -36,4 +48,12 @@ public class UserServices {
     public User findByUsername(String username){
         return userRepo.findByUsername(username);
     }
+
+    public void deleteUserByUsername(String username) {
+        userRepo.deleteUserByUsername(username);
+    }
+    public void saveUser(User user){
+        userRepo.save(user);
+    }
+
 }
