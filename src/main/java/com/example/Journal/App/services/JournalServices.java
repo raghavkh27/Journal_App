@@ -3,6 +3,7 @@ package com.example.Journal.App.services;
 import com.example.Journal.App.entity.JournalEntity;
 import com.example.Journal.App.entity.User;
 import com.example.Journal.App.repository.JournalRepo;
+import com.example.Journal.App.repository.UserRepo;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class JournalServices {
         journalEntity.setDateTime(LocalDateTime.now());
         JournalEntity saved = journalRepo.save(journalEntity);
         user.getJournalEntries().add(saved);
+        userServices.saveUser(user);
     }
     public void saveEntry (JournalEntity journalEntity){
         journalRepo.save(journalEntity);
@@ -38,11 +40,14 @@ public class JournalServices {
         return journalRepo.findById(id);
     }
 
+    @Transactional
     public void deleteEntryById(ObjectId id, String username){
         User user = userServices.findByUsername(username);
-        JournalEntity saved = journalRepo.findById(id).get();
-        user.getJournalEntries().remove(saved);
-        journalRepo.deleteById(id);
+        boolean removed = user.getJournalEntries().removeIf(entry -> entry.getId().equals(id));
+        if(removed){
+            userServices.saveUser(user);
+            journalRepo.deleteById(id);
+        }
     }
     public void updateEntryById(ObjectId id, JournalEntity journalEntity){
         journalEntity.setDateTime(journalEntity.getDateTime());
