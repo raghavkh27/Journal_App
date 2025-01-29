@@ -1,0 +1,16 @@
+#spring:
+#  data:
+#    mongodb :
+#      database: journalDb
+#      uri: mongodb+srv://raghav:raghav123@cluster0.ah0jf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+#      auto-index-creation: true
+#
+#server:
+#  port: 8080
+#  servlet:
+#      context-path: /journalApp
+#
+
+# this is a test file to check that we can also configure the application props with the yml file
+# we have different types to configure the props which includes the yml file the command line interface and we also have application props
+# the priority follows as command line -> application props -> yml files
