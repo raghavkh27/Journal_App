@@ -4,6 +4,8 @@ import com.example.Journal.App.entity.JournalEntity;
 import com.example.Journal.App.entity.User;
 import com.example.Journal.App.repository.UserRepo;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +22,8 @@ public class UserServices {
     @Autowired
     private UserRepo userRepo;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserServices.class);
+
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public void saveNewUser ( User user){
@@ -27,9 +31,13 @@ public class UserServices {
     }
 
     public void saveEntry ( User user){
+        try{
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(List.of("USER"));
-        userRepo.save(user);
+        userRepo.save(user);}
+        catch (Exception e){
+            logger.error(e.getMessage());
+        }
     }
     public List<User> getAllUsers(){
         return userRepo.findAll();
