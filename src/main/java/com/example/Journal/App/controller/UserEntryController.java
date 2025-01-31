@@ -17,10 +17,6 @@ public class UserEntryController {
     @Autowired
     private UserServices userServices;
 
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userServices.getAllUsers();
-    }
 
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User user) {
@@ -41,5 +37,9 @@ public class UserEntryController {
         userServices.deleteUserByUsername(username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
+    @GetMapping
+    public ResponseEntity<?> Greetings() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return new ResponseEntity<>("Hi " + authentication.getName(), HttpStatus.OK);
+    }
 }

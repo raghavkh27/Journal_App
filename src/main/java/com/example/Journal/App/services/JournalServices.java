@@ -3,8 +3,9 @@ package com.example.Journal.App.services;
 import com.example.Journal.App.entity.JournalEntity;
 import com.example.Journal.App.entity.User;
 import com.example.Journal.App.repository.JournalRepo;
-import com.example.Journal.App.repository.UserRepo;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +22,19 @@ public class JournalServices {
     @Autowired
     private UserServices userServices;
 
+
+
     @Transactional
     public void saveEntry (JournalEntity journalEntity, String username){
-        User user = userServices.findByUsername(username);
-        journalEntity.setDateTime(LocalDateTime.now());
-        JournalEntity saved = journalRepo.save(journalEntity);
-        user.getJournalEntries().add(saved);
-        userServices.saveUser(user);
+        try {
+            User user = userServices.findByUsername(username);
+            journalEntity.setDateTime(LocalDateTime.now());
+            JournalEntity saved = journalRepo.save(journalEntity);
+            user.getJournalEntries().add(saved);
+            userServices.saveUser(user);
+        }catch (Exception e){
+            throw new RuntimeException("AN error occured while saving journal",e);
+        }
     }
     public void saveEntry (JournalEntity journalEntity){
         journalRepo.save(journalEntity);
